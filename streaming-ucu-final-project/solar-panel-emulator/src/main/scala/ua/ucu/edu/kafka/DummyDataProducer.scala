@@ -1,7 +1,7 @@
 package ua.ucu.edu.kafka
 
 import java.util.Properties
-
+import scala.util.Random
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -25,10 +25,10 @@ object DummyDataProducer {
 
     val producer = new KafkaProducer[String, String](props)
 
-    val testMsg = "12.3702"
-
     while (true) {
       Thread.sleep(10000)
+
+      val testMsg = (Random.nextFloat * 30).toString
       logger.info(s"[$Topic] $testMsg")
       val data = new ProducerRecord[String, String](Topic, testMsg)
       producer.send(data)
