@@ -5,4 +5,5 @@ object Config {
   val PlantCount = 2
   val PanelCount = 3
   val SensorCount = 4
+  val ReportIntervalSeconds = 5
 }

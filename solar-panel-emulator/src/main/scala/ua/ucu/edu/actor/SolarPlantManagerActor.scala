@@ -28,7 +28,7 @@ class SolarPlantManagerActor
     super.preStart()
 
     // todo - schedule measurement reads
-    context.system.scheduler.schedule(5 second, 5 seconds, self, ReadMeasurement)(
+    context.system.scheduler.schedule(5 second, Config.ReportIntervalSeconds seconds, self, ReadMeasurement)(
       context.dispatcher, self)
   }
 
