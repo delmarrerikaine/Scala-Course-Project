@@ -84,6 +84,8 @@ lazy val weather_provider = (project in file("weather-provider"))
     name := "weather-provider",
     libraryDependencies ++= commonDependencies ++ akkaDependencies ++ Seq(
       // your additional dependencies go here
+      "org.scalaj" %% "scalaj-http" % "2.4.1",
+      "org.json4s" %% "json4s-native" % "3.6.5"
     ),
     dockerSettings()
   )

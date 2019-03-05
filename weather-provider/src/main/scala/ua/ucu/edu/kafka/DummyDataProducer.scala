@@ -3,12 +3,19 @@ package ua.ucu.edu.kafka
 import java.util.Properties
 
 import org.apache.kafka.clients.producer.{Callback, KafkaProducer, ProducerRecord, RecordMetadata}
+import org.json4s.NoTypeHints
+import org.json4s.native.Serialization
+import org.json4s.native.Serialization.write
 import org.slf4j.{Logger, LoggerFactory}
+import ua.ucu.edu.Main.provider
+import ua.ucu.edu.model.{Location, WeatherData}
 
 // delete_me - for testing purposes
 object DummyDataProducer {
 
   val logger: Logger = LoggerFactory.getLogger(getClass)
+
+  implicit val formats = Serialization.formats(NoTypeHints)
 
   def pushTestData(): Unit = {
     val BrokerList: String = System.getenv(Config.KafkaBrokers)
@@ -26,9 +33,13 @@ object DummyDataProducer {
     val testMsg = "hot weather"
 
     while (true) {
-      Thread.sleep(1000)
+      Thread.sleep(10000)
       logger.info(s"[$Topic] $testMsg")
-      val data = new ProducerRecord[String, String](Topic, testMsg)
+
+      val weatherData: WeatherData = provider.weatherAtLocation(Location(49.8397, 24.0297))
+      val serialized = write(weatherData)
+
+      val data = new ProducerRecord[String, String](Topic, serialized)
       producer.send(data, (metadata: RecordMetadata, exception: Exception) => {
         logger.info(metadata.toString, exception)
       })
