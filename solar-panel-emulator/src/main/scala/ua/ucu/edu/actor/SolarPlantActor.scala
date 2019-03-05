@@ -2,6 +2,7 @@ package ua.ucu.edu.actor
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import ua.ucu.edu.model._
+import ua.ucu.edu.Config
 
 // TODO: refactor out code with creation of collection subactors into some common base class for SolarPanelActor, SolarPlantActor and SolarPlantManagerActor
 class SolarPlantActor(
@@ -9,9 +10,8 @@ class SolarPlantActor(
   location: Location
 ) extends Actor with ActorLogging {
 
-  val panelCount = 3
   var panelIds = List[String]()
-  for (i <- 0 until panelCount) {
+  for (i <- 0 until Config.PanelCount) {
     val panelId = "panel_" + i
     panelIds = panelId :: panelIds
   }

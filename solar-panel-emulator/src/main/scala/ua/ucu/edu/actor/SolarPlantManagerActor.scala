@@ -3,6 +3,7 @@ package ua.ucu.edu.actor
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import ua.ucu.edu.model.{PlantRecord, ReadMeasurement, Location}
 import ua.ucu.edu.kafka.DataWriter
+import ua.ucu.edu.Config
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -10,17 +11,16 @@ import scala.language.postfixOps
 class SolarPlantManagerActor
   extends Actor with ActorLogging {
 
-  val plantCount = 2
   var plantIds = List[String]()
-  for (i <- 0 until plantCount) {
+  for (i <- 0 until Config.PlantCount) {
     val plantId = "plant_" + i
     plantIds = plantId :: plantIds
   }
 
   var plantActors = List[ActorRef]()
-  for (id <- plantIds) {
-    val location = Location(20, 20)
-    plantActors = context.actorOf(Props(new SolarPlantActor(id, location))) :: plantActors
+  for (i <- 0 until plantIds.size) {
+    val location = Location(20 + i, 20 + i)
+    plantActors = context.actorOf(Props(new SolarPlantActor(plantIds(i), location))) :: plantActors
   }
 
   override def preStart(): Unit = {

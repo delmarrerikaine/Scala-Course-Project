@@ -4,6 +4,7 @@ import java.util.Properties
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 import org.slf4j.{Logger, LoggerFactory}
 import ua.ucu.edu.model.PlantRecord
+import ua.ucu.edu.Config
 
 object DataWriter {
   val logger: Logger = LoggerFactory.getLogger(getClass)
@@ -31,8 +32,4 @@ object DataWriter {
     val data = new ProducerRecord[String, String](topic, msg)
     producer.send(data)
   }
-}
-
-object Config {
-  val KafkaBrokers = "KAFKA_BROKERS"
 }

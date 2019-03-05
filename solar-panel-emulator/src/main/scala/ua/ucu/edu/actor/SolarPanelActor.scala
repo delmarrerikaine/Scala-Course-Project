@@ -2,14 +2,14 @@ package ua.ucu.edu.actor
 
 import akka.actor.{Actor, ActorRef, Props}
 import ua.ucu.edu.model._
+import ua.ucu.edu.Config
 
 class SolarPanelActor(
   val panelId: String
 ) extends Actor {
 
-  val sensorCount = 4
   var sensorIds = List[String]()
-  for (i <- 0 until sensorCount) {
+  for (i <- 0 until Config.SensorCount) {
     val sensorId = "sensor_" + i
     sensorIds = sensorId :: sensorIds
   }
