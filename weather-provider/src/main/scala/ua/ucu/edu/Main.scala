@@ -2,7 +2,7 @@ package ua.ucu.edu
 
 import java.util.Properties
 
-import ua.ucu.edu.kafka.{Config, DummyDataProducer}
+import ua.ucu.edu.kafka.{Config, WeatherProducer}
 import akka.actor.ActorSystem
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, RecordMetadata}
 import org.json4s.NoTypeHints
@@ -10,8 +10,10 @@ import org.slf4j.LoggerFactory
 import ua.ucu.edu.provider._
 import ua.ucu.edu.model._
 import org.json4s.native.Serialization
-import org.json4s.native.Serialization.{read, write}
+import org.json4s.native.Serialization.write
 import ua.ucu.edu.kafka.DummyDataProducer.logger
+
+import ua.ucu.edu.model.{Location}
 
 import scala.concurrent.duration
 import scala.language.postfixOps
@@ -28,41 +30,23 @@ object Main extends App {
   import duration._
   implicit val formats = Serialization.formats(NoTypeHints)
 
-  val provider = new WeatherProviderApi {}
+  val provider = new WeatherProvider
 
-  val BrokerList: String = System.getenv(Config.KafkaBrokers)
-  val Topic = "weather_data"
-  val props = new Properties()
-  props.put("bootstrap.servers", BrokerList)
-  props.put("client.id", "weather-provider")
-  props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-  props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-
-  logger.info("initializing producer")
-
-  val producer = new KafkaProducer[String, String](props)
-
-  def pushData(weatherData: String): Unit = {
-
-    logger.info(s"[$Topic] $weatherData")
-    val data = new ProducerRecord[String, String](Topic, weatherData)
-    producer.send(data, (metadata: RecordMetadata, exception: Exception) => {
-      logger.info(metadata.toString, exception)
-    })
-  }
+  val locations = List (Location(49.8397, 24.0297),
+    Location(46.916073, 4.466319),
+    Location(40.154661, -2.936860),
+    Location(33.170562, -2.880370),
+    Location(40.665862, 34.503130)
+  )
 
   system.scheduler.schedule(5 seconds, 10 seconds, new Runnable {
     override def run(): Unit = {
       logger.debug("weather request")
       // todo - ask weather api and send data to kafka topic - recommended format is json - or you can come up with simpler string-based protocol
-
-      val weatherData: WeatherData = provider.weatherAtLocation(Location(49.8397, 24.0297))
-      val serialized = write(weatherData)
-
-      pushData(serialized)
+      locations.foreach { location =>
+        val weatherData = provider.weatherAtLocation(location)
+        WeatherProducer.pushData(weatherData)
+      }
     }
   })
-
-  // for testing purposes only
-  DummyDataProducer.pushTestData()
 }
