@@ -1,7 +1,7 @@
 package ua.ucu.edu.kafka
 
 import java.util.Properties
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, RecordMetadata}
 import org.slf4j.{Logger, LoggerFactory}
 import ua.ucu.edu.model.PlantRecord
 import ua.ucu.edu.Config
@@ -29,7 +29,10 @@ object DataWriter {
       s" measurement: ${plantRecord.panelRecord.sensorRecord.measurement} }"
 
     logger.info(s"[$topic] $msg")
-    val data = new ProducerRecord[String, String](topic, msg)
-    producer.send(data)
+    val emptyKey = ""
+    val data = new ProducerRecord[String, String](topic, emptyKey, msg)
+    producer.send(data, (metadata: RecordMetadata, exception: Exception) => {
+      logger.info(metadata.toString, exception)
+    })
   }
 }
