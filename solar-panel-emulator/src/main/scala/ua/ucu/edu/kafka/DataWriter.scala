@@ -29,8 +29,8 @@ object DataWriter {
       s" measurement: ${plantRecord.panelRecord.sensorRecord.measurement} }"
 
     logger.info(s"[$topic] $msg")
-    val emptyKey = ""
-    val data = new ProducerRecord[String, String](topic, emptyKey, msg)
+    val key = s"${plantRecord.location.latitude}-${plantRecord.location.longitude}"
+    val data = new ProducerRecord[String, String](topic, key, msg)
     producer.send(data, (metadata: RecordMetadata, exception: Exception) => {
       logger.info(metadata.toString, exception)
     })

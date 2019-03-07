@@ -33,7 +33,8 @@ object WeatherProducer {
     val serialized = write(weatherData)
     logger.info(s"[$Topic] $serialized")
 
-    val data = new ProducerRecord[String, String](Topic, serialized)
+    val key = s"${weatherData.location.latitude}-${weatherData.location.longitude}"
+    val data = new ProducerRecord[String, String](Topic, key, serialized)
     producer.send(data, (metadata: RecordMetadata, exception: Exception) => {
       logger.info(metadata.toString, exception)
     })

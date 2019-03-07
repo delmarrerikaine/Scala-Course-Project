@@ -96,6 +96,7 @@ lazy val streaming_app = (project in file("streaming-app"))
     name := "streaming-app",
     libraryDependencies ++= commonDependencies ++ streamsDependencies ++ Seq(
       // your additional dependencies go here
+      "net.liftweb" %% "lift-json" % "3.3.0"
     ),
     dockerSettings(),
     mainClass in assembly := Some("ua.ucu.edu.DummyStreamingApp")

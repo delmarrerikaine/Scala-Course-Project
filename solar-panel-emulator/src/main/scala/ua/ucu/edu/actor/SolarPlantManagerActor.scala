@@ -17,10 +17,17 @@ class SolarPlantManagerActor
     plantIds = plantId :: plantIds
   }
 
+  // TODO: properly sync locations with weather service and check if locations is bigger than plantIds.size
+  val locations = List (Location(49.8397, 24.0297),
+    Location(46.916073, 4.466319),
+    Location(40.154661, -2.936860),
+    Location(33.170562, -2.880370),
+    Location(40.665862, 34.503130)
+  )
+
   var plantActors = List[ActorRef]()
   for (i <- 0 until plantIds.size) {
-    val location = Location(20 + i, 20 + i)
-    plantActors = context.actorOf(Props(new SolarPlantActor(plantIds(i), location))) :: plantActors
+    plantActors = context.actorOf(Props(new SolarPlantActor(plantIds(i), locations(i)))) :: plantActors
   }
 
   override def preStart(): Unit = {

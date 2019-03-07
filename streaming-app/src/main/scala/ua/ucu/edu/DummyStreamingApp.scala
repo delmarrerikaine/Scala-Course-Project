@@ -6,7 +6,18 @@ import java.util.concurrent.TimeUnit
 import org.apache.kafka.streams.scala.ImplicitConversions._
 import org.apache.kafka.streams.scala._
 import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
+import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.slf4j.LoggerFactory
+import net.liftweb.json._
+
+case class SensorData (
+  plantId: String,
+  latitude: String,
+  longitude: String,
+  panelId: String,
+  sensorId: String,
+  measurement: String
+)
 
 // dummy app for testing purposes
 object DummyStreamingApp extends App {
@@ -14,22 +25,31 @@ object DummyStreamingApp extends App {
   val logger = LoggerFactory.getLogger(getClass)
 
   val props = new Properties()
-  props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streaming_app")
+  props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streaming_app_0")
   props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, System.getenv(Config.KafkaBrokers))
   props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, Long.box(5 * 1000))
   props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, Long.box(0))
+  props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 
   import Serdes._
 
   val builder = new StreamsBuilder
 
-  val testStream = builder.stream[String, String]("sensor-data")
+  val weatherStream = builder.table[String, String]("weather_data")
+  val sensorStream = builder.stream[String, String]("sensor-data")
 
-  testStream.foreach { (k, v) =>
+  val valueJoiner = (sensor: String, weather: String) => {
+    // TODO: add proper merging
+    sensor + weather
+  }
+
+  val mergedStream = sensorStream.join(weatherStream)(valueJoiner)
+
+  mergedStream.foreach { (k, v) =>
     logger.info(s"record processed $k->$v")
   }
 
-  testStream.to("test_topic_out")
+  mergedStream.to("test_topic_out")
 
   val streams = new KafkaStreams(builder.build(), props)
   streams.cleanUp()
