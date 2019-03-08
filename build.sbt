@@ -74,6 +74,7 @@ lazy val solar_panel_emulator = (project in file("solar-panel-emulator"))
     name := "solar-panel-emulator",
     libraryDependencies ++= commonDependencies ++ akkaDependencies ++ Seq(
       // your additional dependencies go here
+      "org.json4s" %% "json4s-native" % "3.6.5"
     ),
     dockerSettings()
   )
@@ -96,7 +97,7 @@ lazy val streaming_app = (project in file("streaming-app"))
     name := "streaming-app",
     libraryDependencies ++= commonDependencies ++ streamsDependencies ++ Seq(
       // your additional dependencies go here
-      "net.liftweb" %% "lift-json" % "3.3.0"
+      "org.json4s" %% "json4s-native" % "3.6.5"
     ),
     dockerSettings(),
     mainClass in assembly := Some("ua.ucu.edu.DummyStreamingApp")

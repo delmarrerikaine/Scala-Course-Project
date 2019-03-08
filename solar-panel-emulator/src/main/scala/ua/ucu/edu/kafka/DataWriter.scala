@@ -5,6 +5,9 @@ import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, RecordM
 import org.slf4j.{Logger, LoggerFactory}
 import ua.ucu.edu.model.PlantRecord
 import ua.ucu.edu.Config
+import org.json4s._
+import org.json4s.native.JsonMethods._
+import org.json4s.JsonDSL._
 
 object DataWriter {
   val logger: Logger = LoggerFactory.getLogger(getClass)
@@ -21,12 +24,16 @@ object DataWriter {
   logger.info("initialized SolarPanelEmulator DataWriter")
 
   def writeData(plantRecord: PlantRecord): Unit = {
-    val msg = s"{ plantId: ${plantRecord.plantId}," +
-      s" latitude: ${plantRecord.location.latitude}," +
-      s" longitude: ${plantRecord.location.longitude}," +
-      s" panelId: ${plantRecord.panelRecord.panelId}," +
-      s" sensorId: ${plantRecord.panelRecord.sensorRecord.sensorId}," +
-      s" measurement: ${plantRecord.panelRecord.sensorRecord.measurement} }"
+    val json =
+    ("location" ->
+      ("latitude" -> plantRecord.location.latitude) ~
+      ("longitude" -> plantRecord.location.longitude)) ~
+      ("panelId" -> plantRecord.panelRecord.panelId) ~
+      ("sensorId" -> plantRecord.panelRecord.sensorRecord.sensorId) ~
+      ("measurement" -> plantRecord.panelRecord.sensorRecord.measurement) ~
+      ("plantId" -> plantRecord.plantId)
+
+    val msg = compact(render(json))
 
     logger.info(s"[$topic] $msg")
     val key = s"${plantRecord.location.latitude}-${plantRecord.location.longitude}"

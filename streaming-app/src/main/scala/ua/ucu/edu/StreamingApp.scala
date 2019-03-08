@@ -7,8 +7,13 @@ import org.apache.kafka.streams.scala.ImplicitConversions._
 import org.apache.kafka.streams.scala._
 import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
 import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.json4s
+import org.json4s.DefaultFormats
 import org.slf4j.LoggerFactory
-import net.liftweb.json._
+import org.json4s.native.JsonMethods._
+import org.json4s.JsonDSL._
+import org.json4s._
+
 
 case class SensorData (
   plantId: String,
@@ -38,9 +43,21 @@ object DummyStreamingApp extends App {
   val weatherStream = builder.table[String, String]("weather_data")
   val sensorStream = builder.stream[String, String]("sensor-data")
 
+  implicit val formats = DefaultFormats
+
   val valueJoiner = (sensor: String, weather: String) => {
-    // TODO: add proper merging
-    sensor + weather
+    logger.debug(s"SENSOR DATA: $sensor")
+    logger.debug(s"WEATHER DATA: $weather")
+
+    val sensorJson = parse(sensor)
+    val weatherJson = parse(weather)
+
+    val merged = sensorJson merge weatherJson
+    val result = pretty(render(merged))
+
+    logger.debug(s"MERGED DATA: $result")
+
+    result
   }
 
   val mergedStream = sensorStream.join(weatherStream)(valueJoiner)
