@@ -46,8 +46,18 @@ object DummyStreamingApp extends App {
   implicit val formats = DefaultFormats
 
   val valueJoiner = (sensor: String, weather: String) => {
-    // TODO: add proper merging
-    compact(render(parse(sensor) merge parse(weather)))
+    logger.debug(s"SENSOR DATA: $sensor")
+    logger.debug(s"WEATHER DATA: $weather")
+
+    val sensorJson = parse(sensor)
+    val weatherJson = parse(weather)
+
+    val merged = sensorJson merge weatherJson
+    val result = pretty(render(merged))
+
+    logger.debug(s"MERGED DATA: $result")
+
+    result
   }
 
   val mergedStream = sensorStream.join(weatherStream)(valueJoiner)

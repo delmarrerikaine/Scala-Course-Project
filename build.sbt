@@ -74,6 +74,7 @@ lazy val solar_panel_emulator = (project in file("solar-panel-emulator"))
     name := "solar-panel-emulator",
     libraryDependencies ++= commonDependencies ++ akkaDependencies ++ Seq(
       // your additional dependencies go here
+      "org.json4s" %% "json4s-native" % "3.6.5"
     ),
     dockerSettings()
   )
