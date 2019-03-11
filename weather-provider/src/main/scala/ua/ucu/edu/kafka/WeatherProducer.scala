@@ -15,7 +15,7 @@ object WeatherProducer {
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
   val BrokerList: String = System.getenv(Config.KafkaBrokers)
-  val Topic = "weather_data"
+  val Topic = "omr-weather-data"
 
   val props = new Properties()
   props.put("bootstrap.servers", BrokerList)

@@ -12,7 +12,7 @@ import org.json4s.JsonDSL._
 object DataWriter {
   val logger: Logger = LoggerFactory.getLogger(getClass)
   val brokerList: String = System.getenv(Config.KafkaBrokers)
-  val topic = "sensor-data"
+  val topic = "omr-sensor-data"
 
   val props = new Properties()
   props.put("bootstrap.servers", brokerList)

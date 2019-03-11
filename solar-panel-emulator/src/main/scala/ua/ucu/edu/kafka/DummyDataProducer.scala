@@ -8,7 +8,7 @@ import org.slf4j.{Logger, LoggerFactory}
 class SolarPanelDummy(val panelId: String, val location: String) {
   val logger: Logger = LoggerFactory.getLogger(getClass)
   val BrokerList: String = System.getenv(DummyConfig.KafkaBrokers)
-  val Topic = "sensor-data"
+  val Topic = "omr-sensor-data"
   val sensors = List("sensor A", "sensor B", "sensor C")
 
   val props = new Properties()

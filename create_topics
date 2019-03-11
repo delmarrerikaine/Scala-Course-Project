@@ -1,4 +1,4 @@
 #!/bin/bash
-sudo docker run --net=host --rm confluentinc/cp-kafka:5.1.0 kafka-topics --create --topic sensor-data --partitions 4 --replication-factor 1 --if-not-exists --zookeeper localhost:2181
-sudo docker run --net=host --rm confluentinc/cp-kafka:5.1.0 kafka-topics --create --topic weather_data --partitions 4 --replication-factor 1 --if-not-exists --zookeeper localhost:2181
-sudo docker run --net=host --rm confluentinc/cp-kafka:5.1.0 kafka-topics --create --topic test_topic_out --partitions 4 --replication-factor 1 --if-not-exists --zookeeper localhost:2181
+sudo docker run --net=host --rm confluentinc/cp-kafka:5.1.0 kafka-topics --create --topic omr-sensor-data --partitions 4 --replication-factor 1 --if-not-exists --zookeeper localhost:2181
+sudo docker run --net=host --rm confluentinc/cp-kafka:5.1.0 kafka-topics --create --topic omr-weather-data --partitions 4 --replication-factor 1 --if-not-exists --zookeeper localhost:2181
+sudo docker run --net=host --rm confluentinc/cp-kafka:5.1.0 kafka-topics --create --topic omr-stream-out --partitions 4 --replication-factor 1 --if-not-exists --zookeeper localhost:2181

@@ -1,4 +1,4 @@
 #!/bin/bash
-sudo docker run --net=host --rm confluentinc/cp-kafka:5.1.0 kafka-topics --delete --topic sensor-data --zookeeper localhost:2181
-sudo docker run --net=host --rm confluentinc/cp-kafka:5.1.0 kafka-topics --delete --topic weather_data --zookeeper localhost:2181
-sudo docker run --net=host --rm confluentinc/cp-kafka:5.1.0 kafka-topics --delete --topic test_topic_out --zookeeper localhost:2181
+sudo docker run --net=host --rm confluentinc/cp-kafka:5.1.0 kafka-topics --delete --topic omr-sensor-data --zookeeper localhost:2181
+sudo docker run --net=host --rm confluentinc/cp-kafka:5.1.0 kafka-topics --delete --topic omr-weather-data --zookeeper localhost:2181
+sudo docker run --net=host --rm confluentinc/cp-kafka:5.1.0 kafka-topics --delete --topic omr-stream-out --zookeeper localhost:2181

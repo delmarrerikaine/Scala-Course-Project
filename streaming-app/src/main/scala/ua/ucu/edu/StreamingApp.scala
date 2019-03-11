@@ -40,8 +40,8 @@ object DummyStreamingApp extends App {
 
   val builder = new StreamsBuilder
 
-  val weatherStream = builder.table[String, String]("weather_data")
-  val sensorStream = builder.stream[String, String]("sensor-data")
+  val weatherStream = builder.table[String, String]("omr-weather-data")
+  val sensorStream = builder.stream[String, String]("omr-sensor-data")
 
   implicit val formats = DefaultFormats
 
@@ -61,7 +61,7 @@ object DummyStreamingApp extends App {
     logger.info(s"record processed $k->$v")
   }
 
-  mergedStream.to("test_topic_out")
+  mergedStream.to("omr-stream-out")
 
   val streams = new KafkaStreams(builder.build(), props)
   streams.cleanUp()
