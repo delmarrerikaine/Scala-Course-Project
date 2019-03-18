@@ -2,8 +2,8 @@ package ua.ucu.edu
 
 object Config {
   val KafkaBrokers = "KAFKA_BROKERS"
-  val PlantCount = 2
-  val PanelCount = 3
+  val PlantCount = 20
+  val PanelCount = 50
   val SensorCount = 4
   val ReportIntervalSeconds = 5
   val MinSensorValue = 5.0
